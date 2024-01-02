@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin("*") // dung de truy cap moi duong dan ca noi bo lan ngoai bo
 public class CategoryController {
     @Autowired
     CategoryService categoryService;
@@ -40,7 +40,7 @@ public class CategoryController {
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
         Category categoryUpdate = categoryService.findById(id);
         categoryUpdate.setCategoryName(category.getCategoryName());
-        categoryUpdate.setStatus(category.isStatus());
+        categoryUpdate.setStatus(category.getStatus());
 
         Category newCategory = categoryService.save(categoryUpdate);
         return new ResponseEntity<>(newCategory, HttpStatus.OK);

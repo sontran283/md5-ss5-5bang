@@ -1,35 +1,38 @@
 package com.ra.md5demoapi.model.dto;
 
-import com.ra.md5demoapi.model.entity.Category;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
+import com.ra.md5demoapi.model.entity.Product;
 
 public class ProductDTO {
-    private int id;
-
+    private Long id;
     private String productName;
 
-    private boolean status;
+    private Boolean status =true;
 
     private Long categoryId;
 
     public ProductDTO() {
-
     }
 
-    public ProductDTO(int id, String productName, boolean status, Long categoryId) {
+    public ProductDTO(Long id, String productName, Boolean status, Long categoryId) {
         this.id = id;
         this.productName = productName;
         this.status = status;
         this.categoryId = categoryId;
     }
 
-    public int getId() {
+    public ProductDTO(Product product){
+        this.id = product.getId();
+        this.productName = product.getProductName();
+        this.status = product.getStatus();
+        this.categoryId = product.getCategory().getId();
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -41,11 +44,11 @@ public class ProductDTO {
         this.productName = productName;
     }
 
-    public boolean isStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

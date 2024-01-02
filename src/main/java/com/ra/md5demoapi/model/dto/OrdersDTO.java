@@ -1,40 +1,30 @@
-package com.ra.md5demoapi.model.entity;
+package com.ra.md5demoapi.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import com.ra.md5demoapi.model.entity.OrderDetail;
 
 import java.util.Set;
 
-@Entity
-public class Orders {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OrdersDTO {
     private Long id;
     private String address;
     private String phone;
     private String note;
     private float total;
-    @Column(columnDefinition = "int default 1")
     private int status=1;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @OneToMany(mappedBy = "orders")
+    private Long userId;
     private Set<OrderDetail> orderDetails;
 
-    public Orders() {
+    public OrdersDTO() {
     }
 
-    public Orders(Long id, String address, String phone, String note, float total, int status, User user, Set<OrderDetail> orderDetails) {
+    public OrdersDTO(Long id, String address, String phone, String note, float total, int status, Long userId, Set<OrderDetail> orderDetails) {
         this.id = id;
         this.address = address;
         this.phone = phone;
         this.note = note;
         this.total = total;
         this.status = status;
-        this.user = user;
+        this.userId = userId;
         this.orderDetails = orderDetails;
     }
 
@@ -86,12 +76,12 @@ public class Orders {
         this.status = status;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Set<OrderDetail> getOrderDetails() {

@@ -3,6 +3,7 @@ package com.ra.md5demoapi.model.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "order_detail")
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -10,10 +11,10 @@ public class OrderDetail {
     private float price;
     private int quantity;
     @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JoinColumn(name = "product_id",referencedColumnName = "id")
     private Product product;
     @ManyToOne
-    @JoinColumn(name = "orders_id")
+    @JoinColumn(name = "orders_id",referencedColumnName = "id")
     private Orders orders;
 
     public OrderDetail() {

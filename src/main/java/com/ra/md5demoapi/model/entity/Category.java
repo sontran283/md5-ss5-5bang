@@ -12,15 +12,19 @@ public class Category {
     private Long id;
     @Column(unique = true)
     private String categoryName;
-
     @Column(columnDefinition = "boolean default true")
-    private boolean status = true;
+    private Boolean status = true;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<Product> product;
+    @OneToMany(mappedBy = "category",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    private Set<Product> products;
 
     public Category() {
+    }
+
+    public Category(Long id, String categoryName, Boolean status) {
+        this.id = id;
+        this.categoryName = categoryName;
+        this.status = status;
     }
 
     public Long getId() {
@@ -39,19 +43,11 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public boolean isStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
-    }
-
-    public Set<Product> getProduct() {
-        return product;
-    }
-
-    public void setProduct(Set<Product> product) {
-        this.product = product;
     }
 }

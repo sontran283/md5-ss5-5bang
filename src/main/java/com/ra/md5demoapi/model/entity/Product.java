@@ -9,15 +9,12 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    private Long id;
     private String productName;
-
-    @Column(columnDefinition = "boolean default true")
-    private boolean status;
-
+    @Column(columnDefinition = "Boolean default true")
+    private Boolean status = true;
     @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JoinColumn(name = "catId", referencedColumnName = "id")
     private Category category;
 
     @OneToMany(mappedBy = "product")
@@ -26,11 +23,19 @@ public class Product {
     public Product() {
     }
 
-    public int getId() {
+    public Product(Long id, String productName, Boolean status, Category category, Set<OrderDetail> orderDetail) {
+        this.id = id;
+        this.productName = productName;
+        this.status = status;
+        this.category = category;
+        this.orderDetail = orderDetail;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -42,11 +47,11 @@ public class Product {
         this.productName = productName;
     }
 
-    public boolean isStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

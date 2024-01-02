@@ -1,0 +1,59 @@
+package com.ra.md5demoapi.controller;
+
+import com.ra.md5demoapi.model.entity.User;
+import com.ra.md5demoapi.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin("*")
+@RequestMapping("/api/v1")
+public class UserController {
+    @Autowired
+    private UserService userService;
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getListUser(){
+        List<User> users=userService.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<User> create_user(@RequestBody User user){
+        User user1=userService.saveOrUpdate(user);
+        return new ResponseEntity<>(user1,HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> delete_user(@PathVariable("id") Long id){
+        User user = userService.findById(id);
+        if (user!=null){
+            userService.delete(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> edit_user(@PathVariable("id") Long id){
+        User user=userService.findById(id);
+        if (user!=null){
+            return new ResponseEntity<>(user,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> update_user(@PathVariable("id") Long id, @RequestBody User user){
+        User user1 = userService.findById(id);
+        user1.setUserName(user.getUserName());
+        user1.setEmail(user.getEmail());
+        user1.setPassword(user.getPassword());
+        user1.setOrders(user.getOrders());
+        User newUser=userService.saveOrUpdate(user1);
+        return new ResponseEntity<>(newUser,HttpStatus.OK);
+    }
+}
