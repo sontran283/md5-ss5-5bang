@@ -6,6 +6,10 @@ import com.ra.md5demoapi.model.entity.Product;
 import com.ra.md5demoapi.service.category.CategoryService;
 import com.ra.md5demoapi.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,38 +68,38 @@ public class ProductController {
 
 
     //    sort + search + pagination
-//    @GetMapping("/products/search")
-//    public ResponseEntity<Page<ProductDTO>> searchProducts(@RequestParam(name = "search") String search,
-//                                                           @RequestParam(name = "page", defaultValue = "0") int page,
-//                                                           @RequestParam(name = "size", defaultValue = "10") int size,
-//                                                           @RequestParam(name = "sort",defaultValue = "id") String sort,
-//                                                           @RequestParam(name = "order",defaultValue = "asc") String order) {
-//        Pageable pageable ;
-//        if (order.equals("asc")){
-//            pageable=PageRequest.of(page, size, Sort.by(sort).ascending());
-//        }else {
-//            pageable=PageRequest.of(page, size, Sort.by(sort).descending());
-//
-//        }
-//        Page<ProductDTO> productDTOS=productService.searchByName(pageable,search);
-//        return new ResponseEntity<>(productDTOS,HttpStatus.OK);
-//    }
+    @GetMapping("/products/search")
+    public ResponseEntity<Page<ProductDTO>> searchProducts(@RequestParam(name = "search") String search,
+                                                           @RequestParam(name = "page", defaultValue = "0") int page,
+                                                           @RequestParam(name = "size", defaultValue = "10") int size,
+                                                           @RequestParam(name = "sort", defaultValue = "id") String sort,
+                                                           @RequestParam(name = "order", defaultValue = "asc") String order) {
+        Pageable pageable;
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+
+        }
+        Page<ProductDTO> productDTOS = productService.searchByName(pageable, search);
+        return new ResponseEntity<>(productDTOS, HttpStatus.OK);
+    }
 
 
     //    sort + pagination
-//    @GetMapping("/products/pagination")
-//    public ResponseEntity<Page<ProductDTO>> getPaginatedProducts(@RequestParam(name = "page", defaultValue = "0") int page,
-//                                                                 @RequestParam(name = "size", defaultValue = "10") int size,
-//                                                                 @RequestParam(name = "sort",defaultValue = "id") String sort,
-//                                                                 @RequestParam(name = "order",defaultValue = "asc") String order) {
-//        Pageable pageable ;
-//        if (order.equals("asc")){
-//            pageable=PageRequest.of(page, size, Sort.by(sort).ascending());
-//        }else {
-//            pageable=PageRequest.of(page, size, Sort.by(sort).descending());
-//
-//        }
-//        Page<ProductDTO> productDTOPage=productService.getAll(pageable);
-//        return new ResponseEntity<>(productDTOPage, HttpStatus.OK);
-//    }
+    @GetMapping("/products/pagination")
+    public ResponseEntity<Page<ProductDTO>> getPaginatedProducts(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                                 @RequestParam(name = "size", defaultValue = "10") int size,
+                                                                 @RequestParam(name = "sort", defaultValue = "id") String sort,
+                                                                 @RequestParam(name = "order", defaultValue = "asc") String order) {
+        Pageable pageable;
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+
+        }
+        Page<ProductDTO> productDTOPage = productService.getAll(pageable);
+        return new ResponseEntity<>(productDTOPage, HttpStatus.OK);
+    }
 }

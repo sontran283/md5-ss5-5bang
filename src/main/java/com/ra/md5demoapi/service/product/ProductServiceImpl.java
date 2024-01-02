@@ -6,6 +6,8 @@ import com.ra.md5demoapi.model.entity.Product;
 import com.ra.md5demoapi.repository.ProductRepositoy;
 import com.ra.md5demoapi.service.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +20,18 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepositoy productRepositoy;
     @Autowired
     private CategoryService categoryService;
+
+    @Override
+    public Page<ProductDTO> getAll(Pageable pageable) {
+        Page<Product> productDTOS = productRepositoy.findAll(pageable);
+        return productDTOS.map(product -> new ProductDTO(product.getId(), product.getProductName(), product.getStatus(), product.getCategory().getId()));
+    }
+
+    @Override
+    public Page<ProductDTO> searchByName(Pageable pageable, String name) {
+        Page<Product> productPage = productRepositoy.findAllByProductNameContainingIgnoreCase(pageable, name);
+        return productPage.map(product -> new ProductDTO(product));
+    }
 
     @Override
     public List<ProductDTO> findAll() {
