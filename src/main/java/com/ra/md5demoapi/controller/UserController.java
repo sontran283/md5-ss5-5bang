@@ -3,6 +3,10 @@ package com.ra.md5demoapi.controller;
 import com.ra.md5demoapi.model.entity.User;
 import com.ra.md5demoapi.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,5 +59,21 @@ public class UserController {
         user1.setOrders(user.getOrders());
         User newUser=userService.saveOrUpdate(user1);
         return new ResponseEntity<>(newUser,HttpStatus.OK);
+    }
+
+    @GetMapping("/users/search+sort+pagination")
+    public ResponseEntity<Page<User>> getUsers(@RequestParam(name = "search") String search,
+                                               @RequestParam(name = "sort",defaultValue = "id") String sort,
+                                               @RequestParam(name = "order",defaultValue = "asc") String order,
+                                               @RequestParam(name = "size",defaultValue = "5") int size,
+                                               @RequestParam(name = "page",defaultValue = "0") int page){
+        Pageable pageable;
+        if (order.equals("asc")){
+            pageable= PageRequest.of(page,size, Sort.by(sort).ascending());
+        }else {
+            pageable=PageRequest.of(page,size,Sort.by(sort).descending());
+        }
+        Page<User> userPage=userService.searchByName(pageable,search);
+        return new ResponseEntity<>(userPage,HttpStatus.OK);
     }
 }

@@ -3,6 +3,10 @@ package com.ra.md5demoapi.controller;
 import com.ra.md5demoapi.model.entity.Category;
 import com.ra.md5demoapi.service.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,44 +19,64 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
-    @GetMapping("/category")
-    public ResponseEntity<List<Category>> category() {
-        List<Category> list = categoryService.findAll();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    //    lay du lieu
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> categories() {
+        List<Category> categories = categoryService.findAll();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PostMapping("/category")
-    public ResponseEntity<Category> create(@RequestBody Category category) {
-        Category newCategory = categoryService.save(category);
-        return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
+    //    them moi
+    @PostMapping("/categories")
+    public ResponseEntity<Category> create_category(@RequestBody Category category) {
+        Category newCat = categoryService.saveOrUpdate(category);
+        return new ResponseEntity<>(newCat, HttpStatus.CREATED);
     }
 
-    @GetMapping("/category/{id}")
-    public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
-        Category category = categoryService.findById(id);
-        if (category != null) {
-            return new ResponseEntity<>(category, HttpStatus.OK);
+    //    chinh sua
+    @GetMapping("/categories/{id}")
+    public ResponseEntity<?> get_category_by_id(@PathVariable("id") Long id) {
+        Category idEdit = categoryService.findById(id);
+        if (idEdit != null) {
+            return new ResponseEntity<>(idEdit, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/category/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
-        Category categoryUpdate = categoryService.findById(id);
-        categoryUpdate.setCategoryName(category.getCategoryName());
-        categoryUpdate.setStatus(category.getStatus());
-
-        Category newCategory = categoryService.save(categoryUpdate);
-        return new ResponseEntity<>(newCategory, HttpStatus.OK);
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<Category> update_category(@PathVariable("id") Long id,@RequestBody Category category){
+        Category category1=categoryService.findById(id);
+        category1.setCategoryName(category.getCategoryName());
+        category1.setStatus(category1.getStatus());
+        Category updateCat=categoryService.saveOrUpdate(category1);
+        return new ResponseEntity<>(updateCat,HttpStatus.OK);
     }
 
-    @DeleteMapping("/category/{id}")
-    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
-        try {
+//    xoa
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity<Category> delete_category(@PathVariable("id") Long id){
+        Category cat=categoryService.findById(id);
+        if (cat!=null){
             categoryService.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/categories/sort+search+pagination")
+    public ResponseEntity<Page<Category>> getCategories(@RequestParam(name = "page",defaultValue = "0") int page,
+                                                        @RequestParam(name = "size",defaultValue = "5") int size,
+                                                        @RequestParam(name = "sort",defaultValue = "id") String sort,
+                                                        @RequestParam(name = "order",defaultValue = "asc") String order,
+                                                        @RequestParam(name = "search") String search){
+        Pageable pageable;
+        if (order.equals("asc")){
+            pageable= PageRequest.of(page,size, Sort.by(sort).ascending());
+        }else {
+            pageable=PageRequest.of(page,size,Sort.by(sort).descending());
+        }
+        Page<Category> categoryPage=categoryService.searchByName(pageable,search);
+        return new ResponseEntity<>(categoryPage,HttpStatus.OK);
     }
 }

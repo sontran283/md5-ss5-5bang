@@ -6,6 +6,8 @@ import com.ra.md5demoapi.model.entity.User;
 import com.ra.md5demoapi.repository.OrdersRepository;
 import com.ra.md5demoapi.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -67,7 +69,6 @@ public class OrdersServiceImpl implements OrdersService {
         return ordersRepository.findById(id).orElse(null);
     }
 
-    @Override
     public OrdersDTO saveOrUpdate(OrdersDTO ordersDTO) {
         Orders orders = new Orders();
         orders.setId(ordersDTO.getId());
@@ -82,5 +83,17 @@ public class OrdersServiceImpl implements OrdersService {
         OrdersDTO saveOrdersDTO = new OrdersDTO();
         saveOrdersDTO.setStatus(orders.getStatus());
         return saveOrdersDTO;
+    }
+
+    @Override
+    public Page<OrdersDTO> searchOrdersById(Pageable pageable, Integer id) {
+        Page<Orders> ordersPage=ordersRepository.findOrdersById(pageable, id);
+        return ordersPage.map(orders -> new OrdersDTO(orders.getId(),orders.getAddress(),orders.getPhone(),orders.getNote(), orders.getTotal(), orders.getStatus(),orders.getUser().getId(),orders.getOrderDetails()));
+    }
+
+    @Override
+    public Page<OrdersDTO> getAll(Pageable pageable) {
+        Page<Orders> ordersPage=ordersRepository.findAll(pageable);
+        return ordersPage.map(orders -> new OrdersDTO(orders.getId(),orders.getAddress(),orders.getPhone(),orders.getNote(), orders.getTotal(), orders.getStatus(),orders.getUser().getId(),orders.getOrderDetails()));
     }
 }

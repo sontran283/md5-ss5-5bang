@@ -1,5 +1,6 @@
 package com.ra.md5demoapi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -13,7 +14,8 @@ public class User {
     private String userName;
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Orders> orders;
 
     public User() {
